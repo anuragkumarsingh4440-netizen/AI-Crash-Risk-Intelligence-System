@@ -1,0 +1,7 @@
+{
+    "model": "CatBoostClassifier",
+    "target": "Driver Distracted By",
+    "test_accuracy_percent": 75.57,
+    "validation_accuracy_percent": 75.6,
+    "status": "Production Ready"
+}
