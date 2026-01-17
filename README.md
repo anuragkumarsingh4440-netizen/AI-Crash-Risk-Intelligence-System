@@ -1,4 +1,4 @@
-# 🚨 AI Crash Risk Intelligence System  
+# 🚨 AI Crash Risk Intelligence System  (CAPSTONE)
 ### End-to-End Data Science, Risk Modeling & Decision Intelligence Platform
 
 🔗 **Live Application (Streamlit):** <ADD_APP_LINK>  
