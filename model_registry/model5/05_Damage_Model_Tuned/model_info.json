@@ -1,0 +1,11 @@
+{
+    "model_name": "XGBoost_3Class",
+    "problem_type": "Vehicle Damage Risk Classification",
+    "classes": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+    ],
+    "final_accuracy": 0.6,
+    "notes": "Selected based on stability and consistent generalization across test and validation datasets"
+}

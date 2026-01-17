@@ -1,0 +1,6 @@
+{
+    "model_type": "CatBoostClassifier",
+    "target": "ACRS Report Type (Injury Crash = 1)",
+    "risk_score_definition": "P(Injury Crash | conditions)",
+    "threshold": 0.5
+}

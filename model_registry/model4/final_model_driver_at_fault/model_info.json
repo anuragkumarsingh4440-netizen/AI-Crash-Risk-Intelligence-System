@@ -1,0 +1,7 @@
+{
+    "model": "CatBoostClassifier",
+    "target": "Driver At Fault",
+    "test_accuracy_percent": 86.59,
+    "validation_accuracy_percent": 86.47,
+    "status": "Production Ready"
+}
