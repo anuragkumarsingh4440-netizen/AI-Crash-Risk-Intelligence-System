@@ -478,18 +478,31 @@ def preprocess_dataset(df: pd.DataFrame) -> pd.DataFrame:
         "Crash_date"
     ]
 
-    df.drop(columns=[c for c in drop_cols if c in df.columns], inplace=True, errors="ignore")
+    df.drop(
+        columns=[c for c in drop_cols if c in df.columns],
+        inplace=True,
+        errors="ignore"
+    )
 
     for col in df.columns:
-        if df[col].dtype == "O":
+        # 🔴 IMPORTANT FIX: Preserve kmeans_cluster as numeric
+        if col == "kmeans_cluster":
+            df[col] = pd.to_numeric(df[col], errors="coerce").fillna(-1).astype(int)
+
+        elif driver distraction:
             df[col] = df[col].fillna("UNKNOWN")
+
         else:
             df[col] = pd.to_numeric(df[col], errors="coerce")
             df[col] = df[col].fillna(df[col].median())
 
+    # Ensure optional columns always exist
     for col in OPTIONAL_COLUMNS:
         if col not in df.columns:
-            df[col] = "UNKNOWN"
+            if col == "kmeans_cluster":
+                df[col] = -1
+            else:
+                df[col] = "UNKNOWN"
 
     return df
 
@@ -497,6 +510,7 @@ with st.spinner("Preprocessing dataset..."):
     df_clean = preprocess_dataset(df)
 
 st.success("Data preprocessing completed")
+
 
 
 # This block shows a preprocessing summary for transparency.
