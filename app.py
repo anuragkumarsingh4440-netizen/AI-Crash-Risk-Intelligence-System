@@ -21,6 +21,122 @@ st.set_page_config(
 st.markdown("""
 <style>
 
+/* ===== FORCE FULL DARK MODE FOR ENTIRE STREAMLIT APP ===== */
+
+/* App root */
+.stApp {
+    background-color: #020617 !important;
+    color: #E5E7EB !important;
+}
+
+/* Main content area */
+div[data-testid="stAppViewContainer"] {
+    background-color: #020617 !important;
+}
+
+/* Main block */
+main {
+    background-color: #020617 !important;
+}
+
+/* All vertical blocks */
+div[data-testid="stVerticalBlock"] {
+    background-color: #020617 !important;
+}
+
+/* Sidebar full dark */
+section[data-testid="stSidebar"] {
+    background-color: #020617 !important;
+    border-right: 1px solid #1F2937;
+}
+
+/* Sidebar text */
+section[data-testid="stSidebar"] * {
+    color: #CBD5E1 !important;
+}
+
+/* Headers & text */
+h1, h2, h3, h4, h5, h6 {
+    color: #F9FAFB !important;
+}
+
+/* Paragraphs & labels */
+p, span, label, div {
+    color: #D1D5DB !important;
+}
+
+/* DataFrames & Tables */
+.stDataFrame, .stTable {
+    background-color: #020617 !important;
+    color: #E5E7EB !important;
+}
+
+.stDataFrame th {
+    background-color: #020617 !important;
+    color: #F9FAFB !important;
+}
+
+.stDataFrame td {
+    background-color: #020617 !important;
+    color: #CBD5E1 !important;
+}
+
+/* Metrics */
+div[data-testid="metric-container"] {
+    background-color: #020617 !important;
+    border: 1px solid #1F2937;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+div[data-testid="metric-container"] label {
+    color: #9CA3AF !important;
+}
+
+div[data-testid="metric-container"] div {
+    color: #F9FAFB !important;
+}
+
+/* Buttons */
+.stButton > button {
+    background-color: #1E40AF !important;
+    color: #F9FAFB !important;
+    border-radius: 8px;
+}
+
+.stButton > button:hover {
+    background-color: #DC2626 !important;
+}
+
+/* Inputs */
+input, textarea, select {
+    background-color: #020617 !important;
+    color: #E5E7EB !important;
+    border: 1px solid #374151 !important;
+}
+
+/* Plotly charts background */
+.plotly-graph-div {
+    background-color: #020617 !important;
+}
+
+/* Remove Streamlit toolbar background */
+header[data-testid="stHeader"] {
+    background-color: #020617 !important;
+}
+
+/* Hide Streamlit footer */
+footer {
+    visibility: hidden;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+
+st.markdown("""
+<style>
+
 /* ===== POLICE INTELLIGENCE HEADER CONTAINER ===== */
 .police-header {
     background: linear-gradient(
