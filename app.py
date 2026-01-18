@@ -1897,7 +1897,6 @@ else:
                         "dominant_injury": df_ai["injury_severity"].value_counts().idxmax(),
                         "dominant_behavior": df_ai["driver_at_fault"].value_counts().idxmax()
                     }
-
                     prompt = f"""
 You are assisting traffic police leadership.
 
