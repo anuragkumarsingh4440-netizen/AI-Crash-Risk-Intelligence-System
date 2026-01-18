@@ -1892,12 +1892,28 @@ else:
 
                     summary_payload = {
                         "total_cases": len(df_ai),
-                        "critical_cases": int((df_ai["POLICE_RISK_CATEGORY"] == "CRITICAL").sum()),
-                        "top_roads": df_ai["Road Name"].value_counts().head(5).to_dict(),
-                        "dominant_injury": df_ai["injury_severity"].value_counts().idxmax(),
-                        "dominant_behavior": df_ai["driver_at_fault"].value_counts().idxmax()
+                        "critical_cases": int(
+                            (df_ai["POLICE_RISK_CATEGORY"] == "CRITICAL").sum()
+                        ),
+                        "top_roads": (
+                            df_ai["Road Name"]
+                            .value_counts()
+                            .head(5)
+                            .to_dict()
+                        ),
+                        "dominant_injury": (
+                            df_ai["injury_severity"]
+                            .value_counts()
+                            .idxmax()
+                        ),
+                        "dominant_behavior": (
+                            df_ai["driver_at_fault"]
+                            .value_counts()
+                            .idxmax()
+                        )
                     }
-prompt = f"""
+
+                    prompt = f"""
 You are assisting traffic police leadership.
 
 Using the following risk intelligence summary, provide:
@@ -1928,35 +1944,6 @@ Keep output short, bullet-based, and non-technical.
     if "ai_explanation_text" in st.session_state:
         st.markdown("### 🧠 AI Interpretation & Recommended Focus")
         st.markdown(st.session_state["ai_explanation_text"])
-
-
-            prompt = f"""
-You are assisting traffic police leadership.
-
-Using the following risk intelligence summary, provide:
-1) Key risk pattern
-2) Why these crashes are dangerous
-3) What police should do next month
-4) Infrastructure warning (if any)
-5) One-line executive conclusion
-
-DATA:
-{summary_payload}
-
-Keep output short, bullet-based, and non-technical.
-"""
-
-            response = model.generate_content(prompt)
-            ai_text = response.text.strip()
-
-            st.markdown("### 🧠 AI Interpretation & Recommended Focus")
-            st.markdown(ai_text)
-            st.session_state["ai_explanation_text"] = ai_text
-
-
-        except Exception:
-            st.warning("Sorry, model limit exceeded. Try after some time.")
-
 
 
 # This block generates a formal executive PDF report.
