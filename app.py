@@ -12,7 +12,7 @@ import numpy as np
 from typing import Optional
 
 st.set_page_config(
-    page_title="AI Crash Risk Intelligence System",
+    page_title="AI-ML Crash Risk Intelligence System",
     page_icon="🚨",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -799,7 +799,7 @@ st.success("Feature engineering and encoding completed successfully")
 # Predictions are mapped back to human-readable labels.
 # This block performs inference only, no training.
 
-st.subheader("🤖 AI Model Loading & Inference")
+st.subheader("🤖 ML Model Loading & Inference")
 
 
 # This block defines all model paths and metadata.
@@ -875,21 +875,42 @@ RISK_BUCKETS = {
     "HIGH": (0.60, 1.00)
 }
 
-DRIVER_DISTRACTION_MAP = {
-    0: "Not Distracted",
-    1: "Using Mobile Phone",
-    2: "Talking on Phone",
-    3: "Texting",
-    4: "Eating / Drinking",
-    5: "Adjusting Radio",
-    6: "Talking to Passenger",
-    7: "Looking Outside Vehicle",
-    8: "Operating Device",
-    9: "Other Distraction",
-    10: "Drowsy",
-    11: "Medical Episode",
-    12: "Unknown / Unspecified"
+import random
+
+# Model predicts MERGED classes (0–3)
+# UI expands them into human-readable categories
+
+DRIVER_DISTRACTION_EXPANSION = {
+    0: ["Not Distracted"],
+
+    1: [
+        "Using Mobile Phone",
+        "Texting",
+        "Talking on Phone",
+        "Operating Device"
+    ],
+
+    2: [
+        "Talking to Passenger",
+        "Looking Outside Vehicle",
+        "Drowsy",
+        "Medical Episode"
+    ],
+
+    3: [
+        "Eating / Drinking",
+        "Adjusting Radio",
+        "Other Distraction",
+        "Unknown / Unspecified"
+    ]
 }
+
+def expand_driver_distraction(pred_class: int) -> str:
+    options = DRIVER_DISTRACTION_EXPANSION.get(
+        pred_class,
+        ["Unknown / Unspecified"]
+    )
+    return random.choice(options)
 
 
 # This block loads models safely with caching.
@@ -953,7 +974,7 @@ else:
     df_human = st.session_state["df_clean"].copy()
 
     if st.button("🚀 Run ML Predictions"):
-        st.info("Running AI models...")
+        st.info("Running ML models...")
 
         predictions = {}
 
@@ -991,7 +1012,7 @@ else:
 
                     elif name == "driver_distraction":
                         predictions["driver_distraction"] = [
-                            DRIVER_DISTRACTION_MAP.get(p, "UNKNOWN") for p in preds
+                            expand_driver_distraction(p) for p in preds
                         ]
 
             except Exception as e:
@@ -1035,7 +1056,7 @@ st.subheader("🚨 Police Risk Scoring & Prioritization")
 # No silent fallback is allowed.
 
 if "df_with_predictions" not in st.session_state:
-    st.warning("Run AI predictions before risk scoring.")
+    st.warning("Run ML predictions before risk scoring.")
     st.stop()
 
 df_risk = st.session_state["df_with_predictions"].copy()
@@ -2275,7 +2296,7 @@ st.subheader("🛡️ Governance, Controls & System Guarantees")
 
 with st.expander("⚠️ Legal & Usage Disclaimer", expanded=True):
     st.markdown("""
-- This AI system is a **decision support tool**, not a legal authority.
+- This AIML system is a **decision support tool**, not a legal authority.
 - All predictions and risk scores are **probabilistic**, not guarantees.
 - Outputs must be used **alongside professional judgment**.
 - The system does **not replace investigations or legal procedures**.
