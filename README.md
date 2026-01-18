@@ -1,8 +1,9 @@
 # 🚨 AI Crash Risk Intelligence System  (CAPSTONE)
 ### End-to-End Data Science, Risk Modeling & Decision Intelligence Platform
 
-🔗 **Live Application (Streamlit):** <ADD_APP_LINK>  
-📊 **Live Tableau Dashboard:** <ADD_TABLEAU_LINK>  
+🔗 **Live Application (Streamlit):** <https://crash-risk-system.streamlit.app/>  
+📊 **Live Tableau Dashboard:** <(https://public.tableau.com/app/profile/anurag.kumar.singh7896/viz/CAPSTONE_TABLEAU_CRASH/Dashboard1?publish=yes
+)>  
 📹 **System Demo Video:** <ADD_VIDEO_LINK>  
 📧 **Contact:** anuragkumarsingh4440@gmail.com  
 
@@ -32,6 +33,85 @@ This decision was intentional:
 - AI was used as an **accelerator**, similar to collaborating with a platform engineer
 
 👉 **All analytical logic, modeling decisions, risk definitions, and outputs are entirely mine.**
+AI-Crash-Risk-Intelligence-System/
+│
+├── capstone_archiev/
+│   │
+│   ├── 00_dataset/
+│   │   └── Raw crash datasets (original, untouched)
+│   │
+│   ├── 01_DATA_LOAD/
+│   │   └── Data loading, schema checks, data consistency validation
+│   │
+│   ├── 02_EDA_BEFORE_STATS/
+│   │   └── Initial exploratory data analysis
+│   │       (distributions, anomalies, missing patterns)
+│   │
+│   ├── 04_INFERENTIAL_STATS/
+│   │   └── Statistical testing and validation
+│   │       (hypothesis testing, significance checks)
+│   │
+│   ├── 05_EDA_AFTER_STATS/
+│   │   └── Post-cleaning EDA
+│   │       (validated distributions, corrected patterns)
+│   │
+│   ├── 06_MODELS/
+│   │   └── Model experimentation notebooks
+│   │       (feature selection, tuning, evaluation)
+│   │
+│   └── CAPSTONE.html
+│       └── Final consolidated analysis report (HTML)
+│
+├── model_registry/
+│   │
+│   ├── model1/final_model_v1/
+│   │   ├── catboost_injury_severity.pkl
+│   │   └── feature_columns.json
+│   │
+│   ├── model2/final_model_risk_2/
+│   │   ├── catboost_crash_risk.pkl
+│   │   └── feature_columns.json
+│   │
+│   ├── model3/Model3_HotspotClustering/
+│   │   └── hotspot clustering artifacts
+│   │
+│   ├── model4/final_model_driver_at_fault/
+│   │   ├── driver_at_fault_model.pkl
+│   │   └── feature_columns.json
+│   │
+│   ├── model5/05_Damage_Model_Tuned/
+│   │   ├── final_3class_xgboost_model.pkl
+│   │   └── feature_columns.json
+│   │
+│   ├── model6/final_model_driver_distraction/
+│   │   ├── catboost_driver_distraction.pkl
+│   │   └── feature_columns.json
+│   │
+│   └── info.ipynb
+│       └── Model registry documentation & validation notes
+│
+├── sample_dataset/
+│   └── Lightweight dataset for demo & testing
+│
+├── app.py
+│   └── Streamlit application
+│       (end-to-end inference, risk scoring, explainability, exports)
+│
+├── requirements.txt
+│   └── Python dependencies for reproducible deployment
+│
+├── runtime.txt
+│   └── Deployment runtime configuration
+│
+├── README.md
+│   └── Project overview, usage, and navigation guide
+│
+├── .gitignore
+│   └── Repository hygiene and data protection
+│
+└── .gitattributes
+    └── Git LFS tracking for large model files
+![Uploading image.png…]()
 
 This reflects **real-world industry practice**, not dependency.
 
