@@ -706,12 +706,12 @@ for col in FREQ_COLS:
 LABEL_COLS = [
     "Driver Substance Abuse",
     "Driver At Fault",
-    "Driver Distracted By",
     "Vehicle Body Type",
     "Vehicle Make",
     "Driverless Vehicle",
     "Parked Vehicle"
 ]
+
 
 for col in LABEL_COLS:
     if col in df_encoded.columns:
@@ -819,6 +819,11 @@ st.success("Feature engineering and encoding completed successfully")
 # Each model runs independently so one failure does not stop others.
 # Predictions are mapped back to human-readable labels.
 # This block performs inference only, no training.
+
+
+# 🚨 CRITICAL FIX: Remove target leakage before inference
+if "Driver Distracted By" in df_encoded.columns:
+    df_encoded = df_encoded.drop(columns=["Driver Distracted By"])
 
 st.subheader("🤖 ML Model Loading & Inference")
 
