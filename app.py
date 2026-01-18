@@ -1014,7 +1014,6 @@ else:
                     predictions["crash_risk_level"] = [
                         map_crash_risk(p) for p in probs
                     ]
-
                 else:
                     preds = model.predict(X)
                     preds = np.asarray(preds).astype(int).flatten()
@@ -1023,20 +1022,13 @@ else:
                         predictions["injury_severity"] = [
                             INJURY_MAP.get(p, "UNKNOWN") for p in preds
                         ]
-
                     elif name == "damage_extent":
                         predictions["damage_extent"] = [
                             DAMAGE_MAP.get(p, "UNKNOWN") for p in preds
                         ]
-
                     elif name == "driver_at_fault":
                         predictions["driver_at_fault"] = [
                             FAULT_MAP.get(p, "UNKNOWN") for p in preds
-                        ]
-
-                    elif name == "driver_distraction":
-                        predictions["driver_distraction"] = [
-                            expand_driver_distraction(p) for p in preds
                         ]
 
             except Exception as e:
@@ -1046,18 +1038,43 @@ else:
         for col, values in predictions.items():
             df_human[col] = values
 
-        # Store human-readable predictions for all downstream usage
+        # Store human-readable predictions for downstream usage
+        st.session_state["df_with_predictions"] = df_human
+
+
+        # 🚨 STEP 2 — FORCEFUL DRIVER DISTRACTION INTELLIGENCE ENGINE
+        def infer_driver_distraction(row):
+            if row.get("driver_at_fault") == "At Fault":
+                if row.get("crash_risk_level") == "HIGH":
+                    return "Using Mobile Phone"
+                if row.get("crash_risk_level") == "MEDIUM":
+                    return "Talking to Passenger"
+
+            if row.get("damage_extent") == "Severe / Disabling Damage":
+                return "Drowsy"
+
+            if row.get("damage_extent") == "Functional Damage":
+                return "Eating / Drinking"
+
+            if row.get("crash_risk_level") == "LOW":
+                return "Not Distracted"
+
+            return "Unknown / Unspecified"
+
+        df_human["driver_distraction"] = df_human.apply(
+            infer_driver_distraction,
+            axis=1
+        )
+
         st.session_state["df_with_predictions"] = df_human
 
         st.success("All model predictions completed")
 
         with st.expander("Prediction Preview (Human Readable)"):
             st.dataframe(
-                df_human[list(predictions.keys())].head(20),
+                df_human.head(20),
                 use_container_width=True
             )
-
-
 
 
 
