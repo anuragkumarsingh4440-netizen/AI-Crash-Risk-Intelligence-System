@@ -196,7 +196,7 @@ st.markdown("""
 st.markdown("""
 <div class="police-header">
     <div class="police-badge">🚓 POLICE INTELLIGENCE SYSTEM</div>
-    <h1>🚨 AI Crash Risk Intelligence System</h1>
+    <h1>🚨 AI-ML Crash Risk Intelligence System</h1>
     <p>AI-powered decision intelligence for traffic police and government authorities</p>
 </div>
 """, unsafe_allow_html=True)
