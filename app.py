@@ -952,7 +952,7 @@ else:
     df_encoded = st.session_state["df_encoded"]
     df_human = st.session_state["df_clean"].copy()
 
-    if st.button("🚀 Run AI Predictions"):
+    if st.button("🚀 Run ML Predictions"):
         st.info("Running AI models...")
 
         predictions = {}
