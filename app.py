@@ -485,13 +485,20 @@ def preprocess_dataset(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     for col in df.columns:
+
         # 🔴 IMPORTANT FIX: Preserve kmeans_cluster as numeric
         if col == "kmeans_cluster":
             df[col] = pd.to_numeric(df[col], errors="coerce").fillna(-1).astype(int)
 
-        elif driver distraction:
+        # 🔴 IMPORTANT FIX: Preserve driver_distraction as categorical
+        elif col == "driver_distraction":
+            df[col] = df[col].fillna("UNKNOWN").astype(str)
+
+        # Handle other categorical columns
+        elif df[col].dtype == "O":
             df[col] = df[col].fillna("UNKNOWN")
 
+        # Handle numeric columns
         else:
             df[col] = pd.to_numeric(df[col], errors="coerce")
             df[col] = df[col].fillna(df[col].median())
@@ -891,9 +898,6 @@ RISK_BUCKETS = {
 
 import random
 
-# Model predicts MERGED classes (0–3)
-# UI expands them into human-readable categories
-
 DRIVER_DISTRACTION_EXPANSION = {
     0: ["Not Distracted"],
 
@@ -925,6 +929,7 @@ def expand_driver_distraction(pred_class: int) -> str:
         ["Unknown / Unspecified"]
     )
     return random.choice(options)
+
 
 
 # This block loads models safely with caching.
