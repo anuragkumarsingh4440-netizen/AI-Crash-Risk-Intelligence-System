@@ -8,6 +8,17 @@
 📧 **Contact:** anuragkumarsingh4440@gmail.com  
 
 ---
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cb35d870-a704-42c4-9af3-e0e1dd7315c0" />
+---
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e0e190e7-30f9-4a84-b1f1-56123e5c2fca" />
+---
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/066088e4-7891-4754-b5af-b009ccf130c0" />
+---
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/7668ceae-6c76-4010-8604-90b1aa13f76a" />
+---
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ccfb0b78-163d-447e-bc48-618a8f2bcc2e" />
+---
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/972c244a-4813-41fc-96e8-8c1dade7faf2" />
 
 ## 👤 Ownership, Role & Development Approach
 
