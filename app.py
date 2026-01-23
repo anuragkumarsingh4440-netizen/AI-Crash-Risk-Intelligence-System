@@ -2151,17 +2151,99 @@ if generate_pdf:
 # Language is already policy-grade and concise.
 # This enhances foresight without reducing auditability.
 # AI text is never modified inside the PDF.
+if "ai_explanation_text" in st.session_state:
+    story.append(Paragraph("AI Strategic Explanation", styles["Heading2"]))
+    story.append(Spacer(1, 10))
 
-        if "ai_explanation_text" in st.session_state:
-            story.append(Paragraph("AI Strategic Explanation", styles["Heading2"]))
-            story.append(Spacer(1, 8))
+    from reportlab.platypus import Table, TableStyle
+    from reportlab.lib import colors
+    from reportlab.lib.styles import ParagraphStyle
 
-            for line in st.session_state["ai_explanation_text"].split("\n"):
-                if line.strip():
-                    story.append(Paragraph(line, styles["Normal"]))
-                    story.append(Spacer(1, 4))
+    # ---------- styles (local, safe) ----------
+    ai_heading = ParagraphStyle(
+        name="AIHeading",
+        fontName="Helvetica-Bold",
+        fontSize=11,
+        spaceAfter=6,
+        spaceBefore=10
+    )
 
-            story.append(PageBreak())
+    ai_text = ParagraphStyle(
+        name="AIText",
+        fontName="Helvetica",
+        fontSize=10,
+        leading=13,
+        spaceAfter=4
+    )
+
+    # ---------- parse AI text ----------
+    ai_lines = [
+        l.strip()
+        for l in st.session_state["ai_explanation_text"].split("\n")
+        if l.strip()
+    ]
+
+    table_rows = [["Section", "Insight"]]
+    current_section = None
+
+    for line in ai_lines:
+
+        # section detection
+        if "Key Risk Pattern" in line:
+            current_section = "Key Risk Pattern"
+            story.append(Paragraph("Key Risk Pattern", ai_heading))
+            continue
+
+        if "Why These Crashes Are Dangerous" in line:
+            current_section = "Why These Crashes Are Dangerous"
+            story.append(Paragraph("Why These Crashes Are Dangerous", ai_heading))
+            continue
+
+        if "What Police Should Do Next Month" in line:
+            current_section = "Recommended Police Actions"
+            story.append(Paragraph("Recommended Police Actions (Next Month)", ai_heading))
+            continue
+
+        if "Infrastructure Warning" in line:
+            current_section = "Infrastructure Warning"
+            story.append(Paragraph("Infrastructure Warning", ai_heading))
+            continue
+
+        if "One-Line Executive Conclusion" in line:
+            current_section = "Executive Conclusion"
+            story.append(Paragraph("Executive Conclusion", ai_heading))
+            continue
+
+        # bullet or normal line
+        clean_line = line.replace("*", "").strip()
+
+        story.append(Paragraph(clean_line, ai_text))
+
+        if current_section:
+            table_rows.append([current_section, clean_line])
+
+    # ---------- compact executive table ----------
+    if len(table_rows) > 1:
+        story.append(Spacer(1, 12))
+
+        ai_table = Table(
+            table_rows,
+            colWidths=[150, 300]
+        )
+
+        ai_table.setStyle(TableStyle([
+            ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+            ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+            ("FONT", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ("LEFTPADDING", (0, 0), (-1, -1), 6),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+        ]))
+
+        story.append(ai_table)
+
+    story.append(PageBreak())
+
 
 
 # This block adds next-month estimated high-risk locations.
