@@ -286,9 +286,9 @@ section[data-testid="stSidebar"] * {
 # GenAI is optional and never blocks core ML functionality.
 # This ensures safe deployment in restricted environments.
 
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
 GEMINI_API_KEY = os.getenv("GOOGLE_GEMINI_KEY")
 GEMINI_AVAILABLE = True if GEMINI_API_KEY else False
@@ -319,15 +319,16 @@ if GEMINI_AVAILABLE:
 # If GenAI is unavailable, it returns a clean fallback.
 # This keeps police-facing UI calm and professional.
 
-def safe_gemini_generate(prompt: str) -> str:
-    if not GEMINI_AVAILABLE or gemini_model is None:
+def safe_gemini_generate(prompt):
+    if gemini_model is None:
         return "AI advisory not available at the moment."
 
     try:
         response = gemini_model.generate_content(prompt)
         return response.text.strip()
     except Exception:
-        return "Sorry, AI model limit exceeded. Please try again after some time."
+        return "AI model limit exceeded. Please wait 1–2 minutes and try again."
+
 
 # This block builds the sidebar control panel.
 # It allows police users to choose system mode.
@@ -1892,50 +1893,39 @@ st.markdown("## 🤖 AI Strategic Explanation (On-Demand)")
 if "df_policy" not in st.session_state:
     st.info("Run full analysis before using AI explanation.")
 else:
-    if st.button("🧠 Generate AI Explanation"):
-        # 🔒 HARD GATE: prevent repeated API calls on rerun
-        if "ai_explanation_text" in st.session_state:
-            st.info("AI explanation already generated for this dataset.")
-        else:
-            try:
-                with st.spinner("Generating AI strategic explanation..."):
-                    import google.generativeai as genai
-                    import os
+    if st.button("🧠 Generate AI Explanation") and "ai_explanation_text" not in st.session_state:
+        with st.spinner("Generating AI strategic explanation..."):
 
-                    genai.configure(api_key=os.getenv("GOOGLE_GEMINI_KEY"))
+            df_ai = (
+                st.session_state["df_policy"]
+                .sort_values("POLICE_RISK_SCORE", ascending=False)
+                .head(50)
+            )
 
-                    model = genai.GenerativeModel("gemini-2.5-flash-lite")
+            summary_payload = {
+                "total_cases": len(df_ai),
+                "critical_cases": int(
+                    (df_ai["POLICE_RISK_CATEGORY"] == "CRITICAL").sum()
+                ),
+                "top_roads": (
+                    df_ai["Road Name"]
+                    .value_counts()
+                    .head(5)
+                    .to_dict()
+                ),
+                "dominant_injury": (
+                    df_ai["injury_severity"]
+                    .value_counts()
+                    .idxmax()
+                ),
+                "dominant_behavior": (
+                    df_ai["driver_at_fault"]
+                    .value_counts()
+                    .idxmax()
+                )
+            }
 
-                    df_ai = (
-                        st.session_state["df_policy"]
-                        .sort_values("POLICE_RISK_SCORE", ascending=False)
-                        .head(50)
-                    )
-
-                    summary_payload = {
-                        "total_cases": len(df_ai),
-                        "critical_cases": int(
-                            (df_ai["POLICE_RISK_CATEGORY"] == "CRITICAL").sum()
-                        ),
-                        "top_roads": (
-                            df_ai["Road Name"]
-                            .value_counts()
-                            .head(5)
-                            .to_dict()
-                        ),
-                        "dominant_injury": (
-                            df_ai["injury_severity"]
-                            .value_counts()
-                            .idxmax()
-                        ),
-                        "dominant_behavior": (
-                            df_ai["driver_at_fault"]
-                            .value_counts()
-                            .idxmax()
-                        )
-                    }
-
-                    prompt = f"""
+            prompt = f"""
 You are assisting traffic police leadership.
 
 Using the following risk intelligence summary, provide:
@@ -1951,21 +1941,15 @@ DATA:
 Keep output short, bullet-based, and non-technical.
 """
 
-                    response = model.generate_content(prompt)
-                    ai_text = response.text.strip()
-
-                    st.session_state["ai_explanation_text"] = ai_text
-                    st.success("AI explanation generated successfully")
-
-            except Exception:
-                st.warning(
-                    "AI model limit exceeded. Please wait 1–2 minutes and try again."
-                )
+            ai_text = safe_gemini_generate(prompt)
+            st.session_state["ai_explanation_text"] = ai_text
+            st.success("AI explanation generated successfully")
 
     # ✅ DISPLAY ONLY — NO API CALL ON RERUN
     if "ai_explanation_text" in st.session_state:
         st.markdown("### 🧠 AI Interpretation & Recommended Focus")
         st.markdown(st.session_state["ai_explanation_text"])
+
 
 
 # This block generates a formal executive PDF report.
