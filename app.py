@@ -2019,14 +2019,6 @@ if generate_pdf:
         from reportlab.lib.pagesizes import A4
         from reportlab.lib import colors
 
-
-# This block initializes the PDF document.
-# The PDF is generated fully in memory.
-# No backend file is written to disk.
-# This is mandatory for Streamlit downloads.
-# It ensures cloud and local compatibility.
-# The output is user-downloadable.
-
         doc = SimpleDocTemplate(
             pdf_buffer,
             pagesize=A4,
@@ -2039,14 +2031,6 @@ if generate_pdf:
         styles = getSampleStyleSheet()
         story = []
 
-
-# This block adds the report title and subtitle.
-# The title clearly communicates purpose and authority.
-# Formatting is clean and professional.
-# This sets the tone for the entire document.
-# No logos are embedded to keep it generic.
-# Suitable for official circulation.
-
         story.append(Paragraph(
             "Police Crash Risk Intelligence Report",
             styles["Title"]
@@ -2058,14 +2042,6 @@ if generate_pdf:
             styles["Italic"]
         ))
         story.append(Spacer(1, 24))
-
-
-# This block creates the executive summary section.
-# The summary explains the system and its purpose.
-# Language is non-technical and policy-friendly.
-# It highlights proactive and preventive value.
-# No model metrics are exposed here.
-# This section is meant for senior leadership.
 
         story.append(Paragraph("Executive Summary", styles["Heading2"]))
         story.append(Spacer(1, 8))
@@ -2080,14 +2056,6 @@ if generate_pdf:
 
         story.append(Paragraph(summary_text, styles["Normal"]))
         story.append(Spacer(1, 16))
-
-
-# This block adds key risk indicators.
-# Metrics provide a quick snapshot of the situation.
-# Percentages are used instead of raw probabilities.
-# Values are derived directly from system outputs.
-# This section supports quick executive review.
-# Data is aggregated and anonymized.
 
         story.append(Paragraph("Key Risk Indicators", styles["Heading2"]))
         story.append(Spacer(1, 8))
@@ -2111,14 +2079,6 @@ if generate_pdf:
 
         story.append(key_table)
         story.append(Spacer(1, 20))
-
-
-# This block adds crash risk distribution.
-# It shows how crashes are spread across risk categories.
-# Table format ensures clarity in printed form.
-# This section supports strategic understanding.
-# Data is aggregated and concise.
-# A page break improves readability.
 
         story.append(Paragraph("Crash Risk Distribution", styles["Heading2"]))
         story.append(Spacer(1, 8))
@@ -2144,114 +2104,91 @@ if generate_pdf:
         story.append(risk_table)
         story.append(PageBreak())
 
+        if "ai_explanation_text" in st.session_state:
+            story.append(Paragraph("AI Strategic Explanation", styles["Heading2"]))
+            story.append(Spacer(1, 10))
 
-# This block injects AI strategic explanation if available.
-# AI content is optional and user-triggered.
-# If AI was not used, this section is skipped.
-# Language is already policy-grade and concise.
-# This enhances foresight without reducing auditability.
-# AI text is never modified inside the PDF.
-if "ai_explanation_text" in st.session_state:
-    story.append(Paragraph("AI Strategic Explanation", styles["Heading2"]))
-    story.append(Spacer(1, 10))
+            from reportlab.platypus import Table, TableStyle
+            from reportlab.lib import colors
+            from reportlab.lib.styles import ParagraphStyle
 
-    from reportlab.platypus import Table, TableStyle
-    from reportlab.lib import colors
-    from reportlab.lib.styles import ParagraphStyle
+            ai_heading = ParagraphStyle(
+                name="AIHeading",
+                fontName="Helvetica-Bold",
+                fontSize=11,
+                spaceAfter=6,
+                spaceBefore=10
+            )
 
-    # ---------- styles (local, safe) ----------
-    ai_heading = ParagraphStyle(
-        name="AIHeading",
-        fontName="Helvetica-Bold",
-        fontSize=11,
-        spaceAfter=6,
-        spaceBefore=10
-    )
+            ai_text = ParagraphStyle(
+                name="AIText",
+                fontName="Helvetica",
+                fontSize=10,
+                leading=13,
+                spaceAfter=4
+            )
 
-    ai_text = ParagraphStyle(
-        name="AIText",
-        fontName="Helvetica",
-        fontSize=10,
-        leading=13,
-        spaceAfter=4
-    )
+            ai_lines = [
+                l.strip()
+                for l in st.session_state["ai_explanation_text"].split("\n")
+                if l.strip()
+            ]
 
-    # ---------- parse AI text ----------
-    ai_lines = [
-        l.strip()
-        for l in st.session_state["ai_explanation_text"].split("\n")
-        if l.strip()
-    ]
+            table_rows = [["Section", "Insight"]]
+            current_section = None
 
-    table_rows = [["Section", "Insight"]]
-    current_section = None
+            for line in ai_lines:
+                if "Key Risk Pattern" in line:
+                    current_section = "Key Risk Pattern"
+                    story.append(Paragraph("Key Risk Pattern", ai_heading))
+                    continue
 
-    for line in ai_lines:
+                if "Why These Crashes Are Dangerous" in line:
+                    current_section = "Why These Crashes Are Dangerous"
+                    story.append(Paragraph("Why These Crashes Are Dangerous", ai_heading))
+                    continue
 
-        # section detection
-        if "Key Risk Pattern" in line:
-            current_section = "Key Risk Pattern"
-            story.append(Paragraph("Key Risk Pattern", ai_heading))
-            continue
+                if "What Police Should Do Next Month" in line:
+                    current_section = "Recommended Police Actions"
+                    story.append(Paragraph("Recommended Police Actions (Next Month)", ai_heading))
+                    continue
 
-        if "Why These Crashes Are Dangerous" in line:
-            current_section = "Why These Crashes Are Dangerous"
-            story.append(Paragraph("Why These Crashes Are Dangerous", ai_heading))
-            continue
+                if "Infrastructure Warning" in line:
+                    current_section = "Infrastructure Warning"
+                    story.append(Paragraph("Infrastructure Warning", ai_heading))
+                    continue
 
-        if "What Police Should Do Next Month" in line:
-            current_section = "Recommended Police Actions"
-            story.append(Paragraph("Recommended Police Actions (Next Month)", ai_heading))
-            continue
+                if "One-Line Executive Conclusion" in line:
+                    current_section = "Executive Conclusion"
+                    story.append(Paragraph("Executive Conclusion", ai_heading))
+                    continue
 
-        if "Infrastructure Warning" in line:
-            current_section = "Infrastructure Warning"
-            story.append(Paragraph("Infrastructure Warning", ai_heading))
-            continue
+                clean_line = line.replace("*", "").strip()
+                story.append(Paragraph(clean_line, ai_text))
 
-        if "One-Line Executive Conclusion" in line:
-            current_section = "Executive Conclusion"
-            story.append(Paragraph("Executive Conclusion", ai_heading))
-            continue
+                if current_section:
+                    table_rows.append([current_section, clean_line])
 
-        # bullet or normal line
-        clean_line = line.replace("*", "").strip()
+            if len(table_rows) > 1:
+                story.append(Spacer(1, 12))
 
-        story.append(Paragraph(clean_line, ai_text))
+                ai_table = Table(
+                    table_rows,
+                    colWidths=[150, 300]
+                )
 
-        if current_section:
-            table_rows.append([current_section, clean_line])
+                ai_table.setStyle(TableStyle([
+                    ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                    ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+                    ("FONT", (0, 0), (-1, 0), "Helvetica-Bold"),
+                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 6),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+                ]))
 
-    # ---------- compact executive table ----------
-    if len(table_rows) > 1:
-        story.append(Spacer(1, 12))
+                story.append(ai_table)
 
-        ai_table = Table(
-            table_rows,
-            colWidths=[150, 300]
-        )
-
-        ai_table.setStyle(TableStyle([
-            ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
-            ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
-            ("FONT", (0, 0), (-1, 0), "Helvetica-Bold"),
-            ("VALIGN", (0, 0), (-1, -1), "TOP"),
-            ("LEFTPADDING", (0, 0), (-1, -1), 6),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 6),
-        ]))
-
-        story.append(ai_table)
-
-    story.append(PageBreak())
-
-
-
-# This block adds next-month estimated high-risk locations.
-# Locations are derived from recurring CRITICAL and HIGH risk patterns.
-# This section directly supports preventive planning.
-# Only top locations are included for clarity.
-# Data is fully system-generated and explainable.
-# This is a forward-looking intelligence section.
+            story.append(PageBreak())
 
         if "next_month_risk_table" in st.session_state:
             story.append(Paragraph(
@@ -2261,7 +2198,6 @@ if "ai_explanation_text" in st.session_state:
             story.append(Spacer(1, 8))
 
             df_top = st.session_state["next_month_risk_table"].head(10)
-
             table_data = [df_top.columns.tolist()] + df_top.values.tolist()
 
             forecast_table = Table(table_data, repeatRows=1)
@@ -2275,14 +2211,6 @@ if "ai_explanation_text" in st.session_state:
 
             story.append(forecast_table)
             story.append(PageBreak())
-
-
-# This block adds policy and enforcement recommendations.
-# Recommendations are generic and non-prescriptive.
-# They are derived from system intelligence.
-# Language is suitable for official documents.
-# This section links analysis to action.
-# It avoids operational micromanagement.
 
         story.append(Paragraph("Policy and Enforcement Recommendations", styles["Heading2"]))
         story.append(Spacer(1, 12))
@@ -2299,14 +2227,6 @@ if "ai_explanation_text" in st.session_state:
             story.append(Paragraph(f"- {rec}", styles["Normal"]))
             story.append(Spacer(1, 6))
 
-
-# This block concludes the report.
-# The conclusion reinforces preventive value.
-# It positions the system as decision support.
-# Language is confident but conservative.
-# This closes the document professionally.
-# No new data is introduced here.
-
         story.append(Spacer(1, 16))
         story.append(Paragraph("Conclusion", styles["Heading2"]))
         story.append(Spacer(1, 8))
@@ -2320,14 +2240,6 @@ if "ai_explanation_text" in st.session_state:
         )
 
         story.append(Paragraph(conclusion_text, styles["Normal"]))
-
-
-# This block builds the PDF in memory and provides it to the user.
-# No backend file storage is used.
-# The PDF is streamed directly to the browser.
-# This is secure and deployment-safe.
-# Errors are fully caught.
-# The app never crashes.
 
         doc.build(story)
         pdf_buffer.seek(0)
