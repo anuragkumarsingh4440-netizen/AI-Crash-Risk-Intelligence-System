@@ -312,6 +312,10 @@ if GEMINI_AVAILABLE:
         gemini_model = None
         GEMINI_AVAILABLE = False
 
+st.write("GEMINI_AVAILABLE:", GEMINI_AVAILABLE)
+st.write("Gemini model loaded:", gemini_model is not None)
+
+
 # This block defines a safe Gemini call wrapper.
 # It prevents app crashes due to quota or token limits.
 # Any large error is converted into a user-friendly message.
