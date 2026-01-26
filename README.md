@@ -316,7 +316,7 @@ Authorities receive a **future risk location list** for preventive action.
 
 ## 🧠 Final Note
 
-This project demonstrates **full data science ownership**, not isolated modeling.
+This project demonstrates **full data science **, not isolated modeling.
 
 Every decision — from anomaly handling to deployment — was made with:
 - Real-world constraints
