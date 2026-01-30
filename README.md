@@ -2,7 +2,7 @@
 ### End-to-End Data Science, Risk Modeling & Decision Intelligence Platform
 
 🔗 **Live Application (Streamlit):** <https://crash-risk-system.streamlit.app/>  
-📊 **Live Tableau Dashboard:** < https://surl.li/jycscm>  
+📊 **Live Tableau Dashboard:** <https://shorturl.at/pbxhj>  
 📹 **System Demo Video:** <https://tinyurl.com/35jk7esr>  
 📧 **Contact:** anuragkumarsingh4440@gmail.com  
 ##  **Data Source - https://catalog.data.gov/dataset/crash-reporting-drivers-data**
